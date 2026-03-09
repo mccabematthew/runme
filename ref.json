@@ -1,0 +1,56 @@
+{
+  "id": "2026-03-09T18:30:00Z",
+  "date": "2026-03-09",
+  "run_type": "easy",
+  "route": "neighborhood loop",
+
+  // Core metrics (from Apple)
+  "distance_miles": 4.2,
+  "distance_km": 6.76,
+  "elapsed_seconds": 2580,
+  "workout_seconds": 2340,
+  "calories_total": 480,
+  "calories_active": 390,
+  "elevation_ft": 180,
+
+  // Heart rate
+  "heart_rate_avg": 152,
+  "heart_rate_max": 171,
+
+  // Pace
+  "pace_avg_sec_per_mile": 557,
+
+  // Splits (one entry per mile)
+  "splits": [
+    { "mile": 1, "pace_seconds": 580, "heart_rate_avg": 144 },
+    { "mile": 2, "pace_seconds": 560, "heart_rate_avg": 151 },
+    { "mile": 3, "pace_seconds": 548, "heart_rate_avg": 156 },
+    { "mile": 4, "pace_seconds": 541, "heart_rate_avg": 159 }
+  ],
+
+  // Feel + notes
+  "feel": 3,
+  "notes": "legs felt heavy first mile, opened up after",
+
+  // Race only (null otherwise)
+  "race_event": null
+}
+
+// race_event shape when populated
+"race_event": {
+  "name": "Austin 10K",
+  "official_distance": "10K",
+  "finish_time_seconds": 3180,
+  "placement": null
+}
+
+{
+  "id": "2026-03-09T18:30:00Z",
+  "date": "2026-03-09",
+  "run_type": "easy",
+  "distance_miles": 4.2,
+  "workout_seconds": 2340,
+  "pace_avg_sec_per_mile": 557,
+  "heart_rate_avg": 152,
+  "feel": 3
+}
