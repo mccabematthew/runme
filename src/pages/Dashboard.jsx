@@ -1,31 +1,22 @@
 import { useState, useEffect } from 'react'
 import { Calendar } from '@/components/ui/calendar'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { getRuns } from '@/api/runs'
 
-// Helper: format seconds to mm:ss
 function formatDuration(seconds) {
   const m = Math.floor(seconds / 60)
   const s = seconds % 60
   return `${m}:${s.toString().padStart(2, '0')}`
 }
 
-// Helper: format pace from seconds per mile
 function formatPace(durationSeconds, distanceMiles) {
   if (!distanceMiles) return '--'
   const paceSeconds = durationSeconds / distanceMiles
   const m = Math.floor(paceSeconds / 60)
   const s = Math.round(paceSeconds % 60)
   return `${m}:${s.toString().padStart(2, '0')}/mi`
-}
-
-// Run type badge colors
-const runTypeColors = {
-  easy: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-  tempo: 'bg-orange-500/20 text-orange-300 border-orange-500/30',
-  long: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-  intervals: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
-  race: 'bg-red-500/20 text-red-300 border-red-500/30',
 }
 
 const feelLabels = ['', 'Terrible', 'Bad', 'OK', 'Good', 'Great']
@@ -76,149 +67,148 @@ export default function Dashboard() {
   }
 
   const modifiersClassNames = {
-    hasRun: 'bg-emerald-500/30 text-emerald-200 rounded-full font-bold'
+    hasRun: 'bg-primary/20 text-primary font-bold rounded-full'
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-screen bg-background text-foreground">
+
       {/* Header */}
       <div className="px-4 pt-8 pb-4 md:px-0">
-        <p className="text-xs uppercase tracking-widest text-gray-500 font-mono">your training</p>
+        <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono">your training</p>
         <h1 className="text-3xl font-bold tracking-tight mt-1">RunMe</h1>
       </div>
 
-      {/* Stat pills row */}
-      <div className="px-4 mb-6 md:px-0 flex gap-3 flex-wrap">
-        <div className="inline-flex items-center gap-2 bg-gray-900 border border-gray-800 rounded-full px-4 py-2">
-          <span className="text-emerald-400 font-mono font-bold text-lg">{weekMiles}</span>
-          <span className="text-gray-400 text-sm">miles this week</span>
-        </div>
-        <div className="inline-flex items-center gap-2 bg-gray-900 border border-gray-800 rounded-full px-4 py-2">
-          <span className="text-blue-400 font-mono font-bold text-lg">{totalMiles}</span>
-          <span className="text-gray-400 text-sm">total miles</span>
-        </div>
-        <div className="inline-flex items-center gap-2 bg-gray-900 border border-gray-800 rounded-full px-4 py-2">
-          <span className="text-purple-400 font-mono font-bold text-lg">{runs.length}</span>
-          <span className="text-gray-400 text-sm">runs logged</span>
-        </div>
+      {/* Stat cards row */}
+      <div className="px-4 mb-6 md:px-0 grid grid-cols-3 gap-3">
+        <Card>
+          <CardContent className="pt-4">
+            <p className="text-xs text-muted-foreground font-mono uppercase tracking-wider">this week</p>
+            <p className="text-2xl font-bold font-mono mt-1">{weekMiles}</p>
+            <p className="text-xs text-muted-foreground">miles</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-4">
+            <p className="text-xs text-muted-foreground font-mono uppercase tracking-wider">total</p>
+            <p className="text-2xl font-bold font-mono mt-1">{totalMiles}</p>
+            <p className="text-xs text-muted-foreground">miles</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-4">
+            <p className="text-xs text-muted-foreground font-mono uppercase tracking-wider">runs</p>
+            <p className="text-2xl font-bold font-mono mt-1">{runs.length}</p>
+            <p className="text-xs text-muted-foreground">logged</p>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Main content — stacks on mobile, side by side on desktop */}
+      {/* Main content */}
       <div className="px-4 md:px-0 md:grid md:grid-cols-2 md:gap-6 md:items-start">
 
         {/* Calendar */}
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-4">
-          {loading ? (
-            <div className="flex items-center justify-center h-64">
-              <div className="text-gray-600 text-sm font-mono animate-pulse">loading runs...</div>
-            </div>
-          ) : (
-            <Calendar
-              mode="single"
-              selected={selectedDate}
-              onDayClick={handleDayClick}
-              modifiers={modifiers}
-              modifiersClassNames={modifiersClassNames}
-              className="w-full"
-              classNames={{
-                months: 'w-full',
-                month: 'w-full',
-                table: 'w-full',
-                head_cell: 'text-gray-500 font-mono text-xs uppercase w-full text-center',
-                cell: 'text-center p-0',
-                day: 'h-9 w-9 mx-auto text-sm rounded-full hover:bg-gray-800 transition-colors',
-                day_selected: 'bg-emerald-500 text-white hover:bg-emerald-600',
-                day_today: 'border border-gray-600 text-white',
-                day_outside: 'text-gray-700',
-                nav_button: 'text-gray-400 hover:text-white transition-colors',
-                caption: 'text-white font-mono text-sm uppercase tracking-widest mb-4',
-              }}
-            />
-          )}
-        </div>
+        <Card>
+          <CardContent className="pt-4">
+            {loading ? (
+              <div className="flex items-center justify-center h-64">
+                <p className="text-muted-foreground text-sm font-mono animate-pulse">loading runs...</p>
+              </div>
+            ) : (
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onDayClick={handleDayClick}
+                modifiers={modifiers}
+                modifiersClassNames={modifiersClassNames}
+                className="w-full"
+              />
+            )}
+          </CardContent>
+        </Card>
 
         {/* Recent runs */}
-        <div className="mt-6 md:mt-0">
-          <p className="text-xs uppercase tracking-widest text-gray-500 font-mono mb-3">recent</p>
-          <div className="space-y-2">
-            {[...runs].reverse().slice(0, 8).map(run => (
-              <button
-                key={run.runId}
-                onClick={() => { setSelectedRun(run); setSheetOpen(true) }}
-                className="w-full bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 flex items-center justify-between hover:border-gray-700 transition-colors text-left"
-              >
+        <div className="mt-6 md:mt-0 space-y-2">
+          <p className="text-xs uppercase tracking-widest text-muted-foreground font-mono mb-3">recent</p>
+          {[...runs].reverse().slice(0, 8).map(run => (
+            <Card
+              key={run.runId}
+              className="cursor-pointer hover:bg-accent transition-colors"
+              onClick={() => { setSelectedRun(run); setSheetOpen(true) }}
+            >
+              <CardContent className="py-3 px-4 flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-mono text-white">{run.date}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">
+                  <p className="text-sm font-mono">{run.date}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     {formatDuration(run.duration_seconds)} · {formatPace(run.duration_seconds, run.distance_miles)}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-lg font-bold font-mono text-white">{run.distance_miles}</span>
-                  <span className="text-xs text-gray-500">mi</span>
-                  {run.run_type && (
-                    <span className={`text-xs px-2 py-0.5 rounded-full border ${runTypeColors[run.run_type] || 'bg-gray-800 text-gray-400 border-gray-700'}`}>
-                      {run.run_type}
-                    </span>
-                  )}
+                  <span className="text-lg font-bold font-mono">{run.distance_miles}</span>
+                  <span className="text-xs text-muted-foreground">mi</span>
+                  {run.run_type && <Badge variant="secondary">{run.run_type}</Badge>}
                 </div>
-              </button>
-            ))}
-            {runs.length === 0 && !loading && (
-              <p className="text-gray-600 text-sm font-mono text-center py-8">no runs yet — go log one</p>
-            )}
-          </div>
+              </CardContent>
+            </Card>
+          ))}
+          {runs.length === 0 && !loading && (
+            <p className="text-muted-foreground text-sm font-mono text-center py-8">no runs yet — go log one</p>
+          )}
         </div>
       </div>
 
       {/* Run detail sheet */}
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-        <SheetContent side="bottom" className="bg-gray-900 border-t border-gray-800 rounded-t-2xl text-white h-auto max-h-[80vh]">
+        <SheetContent side="bottom" className="rounded-t-2xl h-auto max-h-[80vh]">
           {selectedRun && (
-            <>
+            <div className="px-4 pb-6">
               <SheetHeader className="mb-6">
-                <div className="flex items-center justify-between">
-                  <SheetTitle className="text-white font-mono text-sm uppercase tracking-widest">
+                <div className="flex items-center justify-between pr-8">
+                  <SheetTitle className="font-mono text-sm uppercase tracking-widest">
                     {selectedRun.date}
                   </SheetTitle>
-                  {selectedRun.run_type && (
-                    <span className={`text-xs px-2 py-0.5 rounded-full border ${runTypeColors[selectedRun.run_type] || 'bg-gray-800 text-gray-400 border-gray-700'}`}>
-                      {selectedRun.run_type}
-                    </span>
-                  )}
+                  {selectedRun.run_type && <Badge variant="secondary">{selectedRun.run_type}</Badge>}
                 </div>
               </SheetHeader>
 
               {/* Big distance stat */}
               <div className="flex items-end gap-2 mb-6">
-                <span className="text-6xl font-bold font-mono tracking-tight text-white">{selectedRun.distance_miles}</span>
-                <span className="text-gray-400 mb-2">miles</span>
+                <span className="text-6xl font-bold font-mono tracking-tight">{selectedRun.distance_miles}</span>
+                <span className="text-muted-foreground mb-2">miles</span>
               </div>
 
               {/* Stats grid */}
-              <div className="grid grid-cols-3 gap-3 mb-6">
-                <div className="bg-gray-800/50 rounded-xl p-3">
-                  <p className="text-xs text-gray-500 font-mono uppercase tracking-wider mb-1">time</p>
-                  <p className="text-lg font-mono font-bold">{formatDuration(selectedRun.duration_seconds)}</p>
-                </div>
-                <div className="bg-gray-800/50 rounded-xl p-3">
-                  <p className="text-xs text-gray-500 font-mono uppercase tracking-wider mb-1">pace</p>
-                  <p className="text-lg font-mono font-bold">{formatPace(selectedRun.duration_seconds, selectedRun.distance_miles)}</p>
-                </div>
-                <div className="bg-gray-800/50 rounded-xl p-3">
-                  <p className="text-xs text-gray-500 font-mono uppercase tracking-wider mb-1">feel</p>
-                  <p className="text-lg font-mono font-bold">{feelLabels[selectedRun.feel] || '--'}</p>
-                </div>
+              <div className="grid grid-cols-3 gap-3 mb-4">
+                <Card>
+                  <CardContent className="pt-3 pb-3">
+                    <p className="text-xs text-muted-foreground font-mono uppercase tracking-wider mb-1">time</p>
+                    <p className="text-lg font-mono font-bold">{formatDuration(selectedRun.duration_seconds)}</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="pt-3 pb-3">
+                    <p className="text-xs text-muted-foreground font-mono uppercase tracking-wider mb-1">pace</p>
+                    <p className="text-lg font-mono font-bold">{formatPace(selectedRun.duration_seconds, selectedRun.distance_miles)}</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="pt-3 pb-3">
+                    <p className="text-xs text-muted-foreground font-mono uppercase tracking-wider mb-1">feel</p>
+                    <p className="text-lg font-mono font-bold">{feelLabels[selectedRun.feel] || '--'}</p>
+                  </CardContent>
+                </Card>
               </div>
 
               {/* Notes */}
               {selectedRun.notes && (
-                <div className="bg-gray-800/50 rounded-xl p-3">
-                  <p className="text-xs text-gray-500 font-mono uppercase tracking-wider mb-1">notes</p>
-                  <p className="text-sm text-gray-300">{selectedRun.notes}</p>
-                </div>
+                <Card>
+                  <CardContent className="pt-3 pb-3">
+                    <p className="text-xs text-muted-foreground font-mono uppercase tracking-wider mb-1">notes</p>
+                    <p className="text-sm">{selectedRun.notes}</p>
+                  </CardContent>
+                </Card>
               )}
-            </>
+            </div>
           )}
         </SheetContent>
       </Sheet>
