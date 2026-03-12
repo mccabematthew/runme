@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { LayoutDashboard, Plus, ScrollText } from 'lucide-react'
 
 const tabs = [
-  { path: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/log', label: 'Log Run', icon: Plus },
   { path: '/history', label: 'History', icon: ScrollText },
 ]
