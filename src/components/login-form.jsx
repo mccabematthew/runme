@@ -8,13 +8,22 @@ import {
   FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { useAuth } from 'react-oidc-context'
+import { Link } from 'react-router-dom'
 
 export function LoginForm({
   className,
   ...props
 }) {
+  const auth = useAuth()
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    auth.signinRedirect()
+  }
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form onSubmit={handleSubmit} className={cn("flex flex-col gap-6", className)} {...props}>
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">Login to your account</h1>
@@ -66,7 +75,7 @@ export function LoginForm({
           </Button>
         </Field>
         <FieldDescription className="text-center">
-          Don&apos;t have an account? <a href="#">Sign up</a>
+          Don&apos;t have an account? <Link to="/signup">Sign up</Link>
         </FieldDescription>
       </FieldGroup>
     </form>

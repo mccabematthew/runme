@@ -9,11 +9,19 @@ import {
   FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { useAuth } from 'react-oidc-context'
 
 export function SignupForm({
   className,
   ...props
 }) {
+  const auth = useAuth()
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    auth.signinRedirect()
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
@@ -28,7 +36,7 @@ export function SignupForm({
               </div>
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input id="email" type="email" placeholder="m@example.com" required />
+                <Input id="email" type="email" placeholder="janedoe@example.com" required />
                 <FieldDescription>
                   We&apos;ll use this to contact you. We will not share your
                   email with anyone else.
